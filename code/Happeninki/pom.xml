@@ -13,7 +13,17 @@
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
-    </dependency>  
+    </dependency>
+    <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>jquery-ui</artifactId>
+        <version>1.11.4</version>
+    </dependency>
+    <dependency>
+        <groupId>com.github.jsimone</groupId>
+        <artifactId>webapp-runner</artifactId>
+        <version>8.0.24.0</version>
+    </dependency>    
   </dependencies>
   <build>
     <finalName>Happeninki</finalName>
