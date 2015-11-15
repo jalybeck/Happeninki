@@ -3,3 +3,6 @@
 *.tmp
 *.~vsdx
 /code/Happeninki/target/*
+*.jpr
+*.jws
+/code/Happeninki/.data/*
