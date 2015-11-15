@@ -18,3 +18,7 @@ https://happeninki.herokuapp.com/osallistujat.html
 https://happeninki.herokuapp.com/ryhmat.html
 
 https://happeninki.herokuapp.com/jasenet.html
+
+https://happeninki.herokuapp.com/uusikayttaja.jsp
+
+https://happeninki.herokuapp.com/kayttajalista.jsp

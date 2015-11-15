@@ -24,8 +24,17 @@
         <groupId>com.github.jsimone</groupId>
         <artifactId>webapp-runner</artifactId>
         <version>8.0.24.0</version>
-    </dependency>    
+    </dependency>
+    <dependency> 
+        <groupId>postgresql</groupId> 
+        <artifactId>postgresql</artifactId> 
+        <version>9.0-801.jdbc4</version> 
+    </dependency>     
   </dependencies>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
   <build>
     <finalName>Happeninki</finalName>
     <plugins>
