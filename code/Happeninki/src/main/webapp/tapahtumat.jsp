@@ -55,6 +55,17 @@
                     getId('aktiivinen').value = '';                    
                 }
             }
+            
+           /* function checkFields() {
+                if(getId('nimi').value = '' ||
+                   getId('kuvaus').value = '' ||
+                   getId('pvm').value = '' ||
+                   getId('toistuvuus').value = '' ||
+                   getId('aktiivinen').value = '')
+                    getId('nappi').disabled = true;
+                else
+                    getId('nappi').disabled = false;
+            }*/
         </script>
     </head>
     <body>
@@ -84,13 +95,13 @@
                             String toistuvuus = pidaArvot ? s.tarkistaParametri(request.getParameter("toistuvuus")) : "";   
                             String aktiivinen = pidaArvot ? s.tarkistaParametri(request.getParameter("aktiivinen")) : "";
                         %>
-                        <td><input id="nimi" type="text" name="nimi" value="<%=nimi%>"/></td>
-                        <td><input id="kuvaus" type="text" name="kuvaus" value="<%=kuvaus%>"/></td>
-                        <td><input id="pvm" type="text" name="pvm" value="<%=pvm%>"/></td>
-                        <td><input id="toistuvuus" type="text" name="toistuvuus" value="<%=toistuvuus%>"/></td>
-                        <td><input id="aktiivinen" type="text" name="aktiivinen" value="<%=aktiivinen%>"/></td>
+                        <td><input id="nimi" type="text" name="nimi" value="<%=nimi%>" /></td>
+                        <td><input id="kuvaus" type="text" name="kuvaus" value="<%=kuvaus%>" /></td>
+                        <td><input id="pvm" type="text" name="pvm" value="<%=pvm%>" /></td>
+                        <td><input id="toistuvuus" type="text" name="toistuvuus" value="<%=toistuvuus%>" /></td>
+                        <td><input id="aktiivinen" type="text" name="aktiivinen" value="<%=aktiivinen%>" /></td>
                     </tr>
-                    <tr><td><input id="nappi" type="submit" value="Lisää"/><input id="toiminto" type="hidden" name="toiminto" value="lisaa_tapahtuma"/><input id="id" type="hidden" name="id" /></td></tr>
+                    <tr><td><input id="nappi" type="submit" value="Lisää"  /><input id="toiminto" type="hidden" name="toiminto" value="lisaa_tapahtuma"/><input id="id" type="hidden" name="id" /></td></tr>
                 </table>
                 </form>
                 
