@@ -1,0 +1,69 @@
+#page-wrap {
+  text-align: left;
+  width: 800px;
+  margin: 0 auto;
+}
+
+
+html, body
+{
+    padding: 0;
+    margin: 0;
+}
+
+body
+{
+    background-color: #fff;
+    font-family: helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 22px;
+    color: #666;
+    position: relative;
+    -webkit-text-size-adjust: none;
+}
+body *
+{
+    text-shadow: none;
+}
+
+.header {
+    background-color: rgb(62,148,255);
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 40px;
+
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;	
+    width: 100%;
+    height: 40px;
+    padding: 0 50px;    
+}
+
+.header.fixed
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.content
+{
+	padding: 15px 50px 50px 50px;
+}
+
+.delete_icon {
+   background: url('/img/delete1.png') no-repeat;
+   width: 16px;
+   height: 16px;
+   border: none;
+   display:inline-block;
+}
+
+.input_box {
+    font: inherit;
+    color: inherit;
+    text-align: inherit;
+    outline: none;
+    cursor: text;
+}

@@ -1,13 +1,15 @@
 <%@ page import="fi.tsoha.service.HappeninkiService, java.util.List, fi.tsoha.model.Kayttaja" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
+<jsp:include page="/onkoKirjautunut.jsp"/>
 <html>
     <head>
         <meta content="text/html"/>
         <meta http-equiv="X-UA-Compatible" content="IE=9" >
         <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
-
+        <meta http-equiv="refresh" content="<%=request.getSession(false).getMaxInactiveInterval()%>;url=<%=request.getContextPath()%>/kirjautuminen.jsp?aikakatkaisu=true" />
+        
         <title>Happeninki</title>
 
-        <link rel="stylesheet" type="text/css" href="../resources/css/happeninki.css">
+        <link rel="stylesheet" type="text/css" href="css/happeninki.css">
     </head>
     <body>
         <div id="page">

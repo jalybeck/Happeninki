@@ -2,7 +2,7 @@ package fi.tsoha.model;
 
 public class Kayttaja {
     
-    private String ID;
+    private int ID;
     private String nimi;
     private String tunnus;
     private String salasana;
@@ -44,11 +44,11 @@ public class Kayttaja {
         return sahkoposti;
     }
 
-    public void setID(String ID) {
+    public void setID(int ID) {
         this.ID = ID;
     }
 
-    public String getID() {
+    public int getID() {
         return ID;
     }
 }

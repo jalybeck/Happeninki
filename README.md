@@ -22,3 +22,8 @@ https://happeninki.herokuapp.com/jasenet.jsp
 https://happeninki.herokuapp.com/uusikayttaja.jsp
 
 https://happeninki.herokuapp.com/kayttajalista.jsp
+
+Kirjautuminen:
+
+Tunnus: Testi
+Salasana: Testi1234

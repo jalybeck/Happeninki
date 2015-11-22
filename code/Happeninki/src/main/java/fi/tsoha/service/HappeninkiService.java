@@ -3,6 +3,7 @@ package fi.tsoha.service;
 import fi.tsoha.dao.HappeninkiDAO;
 import fi.tsoha.model.Kayttaja;
 
+import fi.tsoha.model.Tapahtuma;
 import fi.tsoha.model.Tila;
 
 import java.io.UnsupportedEncodingException;
@@ -18,12 +19,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 public class HappeninkiService {
     private HappeninkiDAO dao;
+    
     public HappeninkiService() {
         super();
         dao = new HappeninkiDAO();
     }
+    
     private String sha256(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(str.getBytes("UTF-8"));
@@ -71,18 +76,118 @@ public class HappeninkiService {
         }
         return lista;
     }
-    
-    public Kayttaja haeKayttaja(int id) {
-        Kayttaja k = new Kayttaja();
+
+    public Tila luoUusiTapahtuma(String nimi, String kuvaus, String pvm, int toistuvuus, boolean voimassa,int kayttajaId) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+
+        Tila tila =  new Tila();
+        tila.setKoodi(0);
+        tila.setViesti("Tapahtuma luotu!");
+        
+        Tapahtuma t = new Tapahtuma();
+        
+        t.setNimi(nimi);
+        t.setKuvaus(kuvaus);
+        t.setPvm(pvm);
+        t.setToistuvuus(toistuvuus);
+        t.setVoimassa(voimassa);        
+        t.setKayttajaId(kayttajaId);
+
         try {
-             k =  dao.haeKayttaja(id);
-        } catch (URISyntaxException e) {
-            //TODO: lisää virheviestin lähetys GUIlle
-            System.err.println("Virhe käyttjän hakemisessa ID("+id+"): "+e.getMessage());
+            dao.tallennaTapahtuma(t);
         } catch (SQLException e) {
-            //TODO: lisää virheviestin lähetys GUIlle
-            System.err.println("Virhe käyttjän hakemisessa ID("+id+"): "+e.getMessage());
+            tila.setKoodi(1);
+            tila.setViesti(e.getMessage());
+        } catch (URISyntaxException e) {
+            tila.setKoodi(1);
+            tila.setViesti(e.getMessage());            
         }
-        return k;
+
+        return tila;
+    }
+    
+    public Tila poistaTapahtuma(int id) {
+        Tila tila = new Tila();
+        tila.setKoodi(0);
+        tila.setViesti("Tapahtuma #"+id+" poistettu!");
+        
+        try {
+            dao.poistaTapahtuma(id);
+        } catch (SQLException e) {
+            tila.setKoodi(1);
+            tila.setViesti(e.getMessage());
+        } catch (URISyntaxException e) {
+            tila.setKoodi(1);
+            tila.setViesti(e.getMessage());            
+        }
+
+        return tila;        
+    }
+    
+    public Tila päivitäTapahtuma(int id, String nimi, String kuvaus, String pvm, int toistuvuus, boolean voimassa) {
+        Tila tila =  new Tila();
+        tila.setKoodi(0);
+        tila.setViesti("Tapahtuma päivitetty!");
+        
+        Tapahtuma t = new Tapahtuma();
+        
+        t.setId(id);
+        t.setNimi(nimi);
+        t.setKuvaus(kuvaus);
+        t.setPvm(pvm);
+        t.setToistuvuus(toistuvuus);
+        t.setVoimassa(voimassa);        
+
+
+        try {
+            dao.päivitäTapahtuma(t);
+        } catch (SQLException e) {
+            tila.setKoodi(1);
+            tila.setViesti(e.getMessage());
+        } catch (URISyntaxException e) {
+            tila.setKoodi(1);
+            tila.setViesti(e.getMessage());            
+        }
+
+        return tila;      
+    }    
+    
+    public List<Tapahtuma> listaaTapahtumat(int kayttajaId) {
+        List<Tapahtuma> lista = new ArrayList<Tapahtuma>();
+        try {
+            lista = dao.tapahtumaLista(kayttajaId);
+        } catch (SQLException e) {
+            System.err.println("Virhe tapahtuma listauksessa: "+e.getMessage());
+        }
+        return lista;
+    }
+    
+    public Tapahtuma haeTapahtuma(int id) throws SQLException, URISyntaxException {
+        Tapahtuma t = new Tapahtuma();
+        t =  dao.haeTapahtuma(id);
+        return t;
+    }
+    
+    
+    public String tarkistaParametri(String str) {
+        if(str == null)
+            return "";
+        else
+            return str;
+    }
+    
+    public void kirjaudu(String tunnus, String salasana, HttpSession session) throws SQLException,
+                                                                                     NoSuchAlgorithmException,
+                                                                                     UnsupportedEncodingException {
+        Kayttaja k = null;
+        try {
+            k = dao.haeKayttaja(tunnus,sha256(salasana));
+            if(k != null)
+                dao.paivitaKirjaantumisAika(k.getID());
+            session.setAttribute("kayttaja", k);
+        } catch (URISyntaxException e) {
+            throw new SQLException("Virhe kirjautumisessa: "+e.getMessage());
+        } catch (SQLException e) {
+            throw new SQLException("Virhe kirjautumisessa: "+e.getMessage());
+        }
     }
 }
