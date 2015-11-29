@@ -3,6 +3,7 @@ package fi.tsoha.service;
 import fi.tsoha.dao.HappeninkiDAO;
 import fi.tsoha.model.Kayttaja;
 
+import fi.tsoha.model.Osallistuja;
 import fi.tsoha.model.Tapahtuma;
 import fi.tsoha.model.Tila;
 
@@ -166,7 +167,94 @@ public class HappeninkiService {
         t =  dao.haeTapahtuma(id);
         return t;
     }
+
+    public Tila luoUusiOsallistuja(String nimi, String sahkoposti, boolean osallistuu, int ryhmaId, int tapahtumaId) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+
+        Tila tila =  new Tila();
+        tila.setKoodi(0);
+        tila.setViesti("Osallistuja luotu!");
+        
+        Osallistuja t = new Osallistuja();
+        
+        t.setNimi(nimi);
+        t.setSahkoposti(sahkoposti);
+        t.setOsallistuu(osallistuu);
+        t.setRyhmaId(ryhmaId);
+        t.setTapahtumaId(tapahtumaId);
+        
+        try {
+            dao.tallennaOsallistuja(t);
+        } catch (SQLException e) {
+            tila.setKoodi(1);
+            tila.setViesti(e.getMessage());
+        } catch (URISyntaxException e) {
+            tila.setKoodi(1);
+            tila.setViesti(e.getMessage());            
+        }
+
+        return tila;
+    }
     
+    public Tila poistaOsallistuja(int id) {
+        Tila tila = new Tila();
+        tila.setKoodi(0);
+        tila.setViesti("Osalliistuja #"+id+" poistettu!");
+        
+        try {
+            dao.poistaOsallistuja(id);
+        } catch (SQLException e) {
+            tila.setKoodi(1);
+            tila.setViesti(e.getMessage());
+        } catch (URISyntaxException e) {
+            tila.setKoodi(1);
+            tila.setViesti(e.getMessage());            
+        }
+
+        return tila;        
+    }
+    
+    public Tila päivitäOsallistuja(int id,String nimi, String sahkoposti, int ryhmaId, int tapahtumaId) {
+        Tila tila =  new Tila();
+        tila.setKoodi(0);
+        tila.setViesti("Osallistuja päivitetty!");
+        
+        Osallistuja t = new Osallistuja();
+        
+        t.setId(id);
+        t.setNimi(nimi);
+        t.setSahkoposti(sahkoposti);
+        t.setRyhmaId(ryhmaId);
+        t.setTapahtumaId(tapahtumaId);        
+
+
+        try {
+            dao.päivitäOsallistuja(t);
+        } catch (SQLException e) {
+            tila.setKoodi(1);
+            tila.setViesti(e.getMessage());
+        } catch (URISyntaxException e) {
+            tila.setKoodi(1);
+            tila.setViesti(e.getMessage());            
+        }
+
+        return tila;      
+    }    
+    
+    public List<Osallistuja> listaaOsallistujat(int tapahtumaId) throws SQLException {
+        List<Osallistuja> lista = new ArrayList<Osallistuja>();
+        try {
+            lista = dao.osallistujaLista(tapahtumaId);
+        } catch (SQLException e) {
+            throw new SQLException("Virhe osallistujien listauksessa: "+e.getMessage(),e);
+        }
+        return lista;
+    }
+    
+    public Osallistuja haeOsallistuja(int id) throws SQLException, URISyntaxException {
+        Osallistuja t = new Osallistuja();
+        t =  dao.haeOsallistuja(id);
+        return t;
+    }   
     
     public String tarkistaParametri(String str) {
         if(str == null)
@@ -184,6 +272,7 @@ public class HappeninkiService {
             if(k != null)
                 dao.paivitaKirjaantumisAika(k.getID());
             session.setAttribute("kayttaja", k);
+            
         } catch (URISyntaxException e) {
             throw new SQLException("Virhe kirjautumisessa: "+e.getMessage());
         } catch (SQLException e) {

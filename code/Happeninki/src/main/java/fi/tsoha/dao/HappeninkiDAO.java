@@ -2,6 +2,7 @@ package fi.tsoha.dao;
 
 import fi.tsoha.model.Kayttaja;
 
+import fi.tsoha.model.Osallistuja;
 import fi.tsoha.model.Tapahtuma;
 
 import java.net.URI;
@@ -304,6 +305,139 @@ public class HappeninkiDAO {
         return t;
     }
     
+    public void tallennaOsallistuja(Osallistuja t) throws SQLException, URISyntaxException {
+        String insertTableSQL = "INSERT INTO OSALLISTUJA "
+                              + "(id, nimi, sahkoposti, osallistuu, muokkaus_pvm, ryhma_id, tapahtuma_id) VALUES "
+                              + "(nextval('osallistuja_id_seq'),?,?,?,now(),?,?)";
+                    
+        try(Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(insertTableSQL)) {
+            conn.setAutoCommit(false);
+            
+            stmt.setString(1,t.getNimi());
+            stmt.setString(2,t.getSahkoposti());
+            stmt.setBoolean(3,t.isOsallistuu());
+            stmt.setInt(4,t.getRyhmaId());            
+            stmt.setInt(5,t.getTapahtumaId());
+            
+            stmt.executeUpdate();
+            conn.commit();
+        } catch (SQLException e) {
+            throw new SQLException("Virhe osallistujan tallennuksessa! Virhe: "+e.getMessage());
+        } catch (URISyntaxException e) {
+            throw new SQLException("Tietokantaan ei saatu yhteyttä! Virhe: "+e.getMessage());
+        }
+    }
+    
+    public void päivitäOsallistuja(Osallistuja t) throws SQLException, URISyntaxException {
+        String insertTableSQL = "UPDATE OSALLISTUJA SET nimi = ?, sahkoposti = ?,  muokkaus_pvm = now(), ryhma_id = ?, tapahtuma_id = ? "
+                              + "WHERE id = ?";
+                    
+        try(Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(insertTableSQL)) {
+            conn.setAutoCommit(false);
+            
+            stmt.setString(1,t.getNimi());
+            stmt.setString(2,t.getSahkoposti());
+            stmt.setInt(3,t.getRyhmaId());            
+            stmt.setInt(4,t.getTapahtumaId());
+            stmt.setInt(5,t.getId());
+            
+            stmt.executeUpdate();
+            conn.commit();
+        } catch (SQLException e) {
+            throw new SQLException("Virhe osallistujan tallennuksessa! Virhe: "+e.getMessage());
+        } catch (URISyntaxException e) {
+            throw new SQLException("Tietokantaan ei saatu yhteyttä! Virhe: "+e.getMessage());
+        }
+    }
+    
+    public void poistaOsallistuja(int id) throws SQLException, URISyntaxException {
+        String deleteSQL      = "DELETE FROM OSALLISTUJA "
+                              + "WHERE id = ?";
+
+        try(Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(deleteSQL)) {
+            conn.setAutoCommit(false);
+            
+            stmt.setInt(1,id);
+            
+            stmt.executeUpdate();
+            conn.commit();
+        } catch (SQLException e) {
+            throw new SQLException("Virhe osallistujan poistossa! Virhe: "+e.getMessage());
+        } catch (URISyntaxException e) {
+            throw new SQLException("Tietokantaan ei saatu yhteyttä! Virhe: "+e.getMessage());
+        }
+    }
+    
+    public List<Osallistuja> osallistujaLista(int tapahtumaId) throws SQLException {
+        String selectSQL     =  "SELECT id, nimi, sahkoposti, osallistuu, ryhma_id " +
+                                "FROM   OSALLISTUJA " +
+                                "WHERE  tapahtuma_id = ? "+
+                                "ORDER  BY id";
+        
+        List<Osallistuja> osallistujat = new ArrayList<Osallistuja>();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        
+        try(Connection conn = getConnection(); ) {
+            conn.setAutoCommit(false);
+            
+            pstmt = conn.prepareStatement(selectSQL);
+            pstmt.setInt(1, tapahtumaId);
+            rs = pstmt.executeQuery();   
+            
+            while(rs.next()) {
+                Osallistuja t = new Osallistuja();
+                t.setId(rs.getInt("id"));
+                t.setNimi(rs.getString("nimi"));
+                t.setSahkoposti(rs.getString("sahkoposti"));
+                t.setOsallistuu(rs.getBoolean("osallistuu"));
+                t.setRyhmaId(rs.getInt("ryhma_id"));
+                t.setTapahtumaId(tapahtumaId);
+                osallistujat.add(t);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Virhe hakiessa osallistuja! Tapahtumalle id = "+tapahtumaId+" Virhe: "+e.getMessage());
+        } catch (URISyntaxException e) {
+            throw new SQLException("Tietokantaan ei saatu yhteyttä! Virhe: "+e.getMessage());
+        }
+        
+        return osallistujat;
+    }
+    
+    public Osallistuja haeOsallistuja(int id) throws SQLException, URISyntaxException {
+        String selectSQL     =  "SELECT id, nimi, sahkoposti, osallistuu, ryhma_id, tapahtuma_id " +
+                                "FROM   OSALLISTUJA " +
+                                "WHERE  id = ? "+
+                                "ORDER  BY id";
+        
+        Osallistuja t = new Osallistuja();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try(Connection conn = getConnection()) {
+            conn.setAutoCommit(false);
+            pstmt = conn.prepareStatement(selectSQL);
+            pstmt.setInt(1, id);
+            rs = pstmt.executeQuery();
+            while(rs.next()) {
+                t.setId(rs.getInt("id"));
+                t.setNimi(rs.getString("nimi"));
+                t.setSahkoposti(rs.getString("sahkoposti"));
+                t.setOsallistuu(rs.getBoolean("osallistuu"));
+                t.setRyhmaId(rs.getInt("ryhma_id"));
+                t.setTapahtumaId(rs.getInt("tapahtuma_id"));
+            }
+            
+        } catch (SQLException e) {
+            throw new SQLException("Virhe osallistujan haussa ID:lle "+id+"! Virhe: "+e.getMessage());
+        } catch (URISyntaxException e) {
+            throw new SQLException("Tietokantaan ei saatu yhteyttä! Virhe: "+e.getMessage());
+        } finally {
+            if(rs != null) rs.close();
+            if(pstmt != null) pstmt.close();
+        }
+        
+        return t;
+    }
     
     public void paivitaKirjaantumisAika(int id) throws SQLException {
         String updateSQL    = "UPDATE KAYTTAJA SET viimeksi_kirjautunut = now() "+
