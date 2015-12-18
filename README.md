@@ -7,6 +7,8 @@ URL: https://happeninki.herokuapp.com/
 
 Dok: https://github.com/jalybeck/Happeninki/blob/master/doc/Dokumentti.pdf
 
+SQL lauseet: https://github.com/jalybeck/Happeninki/tree/master/code/database
+
 HTML Sivut:
 
 https://happeninki.herokuapp.com/kirjautuminen.jsp
@@ -26,4 +28,5 @@ https://happeninki.herokuapp.com/kayttajalista.jsp
 Kirjautuminen:
 
 Tunnus: Testi
+
 Salasana: Testi1234
