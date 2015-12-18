@@ -9,15 +9,27 @@
         
         <title>Happeninki</title>
 
-        
+        <link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
         <link rel="stylesheet" type="text/css" href="js/jquery-ui-1.11.4/jquery-ui.css"/>
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui-timepicker-addon.css"/>
+        <link rel="stylesheet" type="text/css" href="css/happeninki.css"/>
+        
         <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script> 
         <script type="text/javascript" src="js/jquery-ui-1.11.4/jquery-ui.js"></script> 
-        <link rel="stylesheet" type="text/css" href="css/happeninki.css"/>  
+        <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>        
         <script type="text/javascript" src="js/jquery.validate.js"></script> 
         <script type="text/javascript" src="js/additional-methods.js"></script>
+        <script type="text/javascript" src="js/jquery.mmenu.min.all.js"></script>        
         
         <script type="text/javascript"> 
+          $(function() {
+            $( "#pvm" ).datetimepicker({
+                controlType: 'select',
+                oneLine: true,
+                timeFormat: 'HH:mm',
+                dateFormat: 'dd.mm.yy'
+            });
+          });        
         /*  $(function() {
             $( "a[id=osallistujat]" )
               .button({
@@ -90,21 +102,15 @@
                 }
             }
             
-           /* function checkFields() {
-                if(getId('nimi').value = '' ||
-                   getId('kuvaus').value = '' ||
-                   getId('pvm').value = '' ||
-                   getId('toistuvuus').value = '' ||
-                   getId('aktiivinen').value = '')
-                    getId('nappi').disabled = true;
-                else
-                    getId('nappi').disabled = false;
-            }*/
+            function poistaTapahtuma() {
+                return confirm('Tapahtuman poistaminen poistaa kaikki osallistujat!\nOletko varma, että haluat jatkaa?');
+            }
         </script>
     </head>
     <body>
         <div id="page">
             <div class="header">
+                <a class="menu" href="#menu"></a>
                 Tapahtumat
                 <jsp:include page="otsake.jsp"/>
             </div>
@@ -171,7 +177,7 @@
                             out.print("<td id=\"pvm_"+t.getId()+"\">");out.print(t.getPvm());out.println("</td>"); 
                             out.print("<td id=\"toistuvuus_"+t.getId()+"\">");out.print(t.getToistuvuus());out.println("</td>");  
                             out.print("<td id=\"aktiivinen_"+t.getId()+"\">");out.print(t.isVoimassa());out.println("</td>");  
-                            out.println("<td align=\"center\"><a href=\"kontrolleri.jsp?id="+t.getId()+"&toiminto=poista_tapahtuma"+"\" class=\"delete_icon\"></a></td>");  
+                            out.println("<td align=\"center\"><a href=\"kontrolleri.jsp?id="+t.getId()+"&toiminto=poista_tapahtuma"+"\" class=\"delete_icon\" onclick=\"return poistaTapahtuma();\"></a></td>");  
                             out.println("<td align=\"center\"><a id=\"osallistujat\" href=\"osallistujat.jsp?tapahtuma_id="+t.getId()+"&tapahtuma="+t.getNimi()+"\">Osallistujat</a></td>");  
                             out.println("</tr>");
                         }
@@ -180,8 +186,27 @@
                 </table>
 
             </div>
-
+			<nav id="menu" width="100px">
+                        
+                         <jsp:include page="valikko.jsp"/>
+ 
+   </nav>
         </div>
+
+
+                
+                <script type="text/javascript">
+			$(function() {
+				
+                                
+                                $("nav#menu").mmenu({
+            extensions: ["theme-dark"]
+         });
+         
+         
+                                
+			});
+		</script>        
     </body>
 </html>
 

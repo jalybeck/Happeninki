@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; UTF-8" pageEncoding="UTF-8" import="fi.tsoha.service.HappeninkiService, java.util.List, fi.tsoha.model.Osallistuja, fi.tsoha.model.Kayttaja"%>
+<%@ page contentType="text/html; UTF-8" pageEncoding="UTF-8" import="fi.tsoha.service.HappeninkiService, java.util.List, fi.tsoha.model.Osallistuja, fi.tsoha.model.Kayttaja, fi.tsoha.model.Ryhma"%>
 <jsp:include page="/onkoKirjautunut.jsp"/>
 <html>
     <head>
@@ -10,8 +10,10 @@
         <title>Happeninki</title>
 
         <link rel="stylesheet" type="text/css" href="js/jquery-ui-1.11.4/jquery-ui.css"/>
+        <link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
         <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script> 
         <script type="text/javascript" src="js/jquery-ui-1.11.4/jquery-ui.js"></script> 
+        <script type="text/javascript" src="js/jquery.mmenu.min.all.js"></script>         
         <link rel="stylesheet" type="text/css" href="css/happeninki.css"/>  
         <script type="javascript">
             
@@ -31,6 +33,7 @@
     <body>
         <div id="page">
             <div class="header">
+                <a class="menu" href="#menu"></a>
                 Osallistujat tapahtumalle - <%=request.getParameter("tapahtuma")%>
                 <jsp:include page="otsake.jsp"/>
             </div>
@@ -58,9 +61,13 @@
                         <td><input id="sahkoposti" type="text" name="sahkoposti" value="<%=sahkoposti%>"/></td>
                         <td> 
                             <select id="ryhma" name="ryhma" onchange="checkDisabled();">
-                                <option value="-1">&nbsp;</option>
-                                <option value="1">Sählyporukka</option>
-                                <option value="2">Kaverit</option>
+                                <option value="-1">-Ei ryhmää-</option>
+                                <%
+                                    List<Ryhma> ryhmat = s.listaaRyhmat(((Kayttaja)session.getAttribute("kayttaja")).getID());
+                                    for(Ryhma r : ryhmat) {
+                                        out.println("<option value=\""+r.getId()+"\">"+r.getNimi()+"</option>");
+                                    }
+                                %>
                             </select> 
                         </td>
                     </tr>
@@ -88,7 +95,7 @@
                             
                             out.print("<td id=\"nimi_"+t.getId()+"\">");out.print(t.getNimi());out.print("</td>");
                             out.print("<td id=\"sahkoposti_"+t.getId()+"\">");out.print(t.getSahkoposti());out.println("</td>");                               
-                            out.print("<td id=\"ryhma_"+t.getId()+"\">");out.print(t.getRyhmaId());out.println("</td>"); 
+                            out.print("<td id=\"ryhma_"+t.getId()+"\">");out.print(s.haeRyhma(t.getRyhmaId()).getNimi());out.println("</td>"); 
                             out.print("<td id=\"osallistuu_"+t.getId()+"\">");out.print(t.isOsallistuu());out.println("</td>");  
                             out.println("<td align=\"center\"><a href=\"kontrolleri.jsp?id="+t.getId()+"&toiminto=poista_osallistuja&tapahtuma_id="+request.getParameter("tapahtuma_id")+"&tapahtuma="+request.getParameter("tapahtuma")+"\" class=\"delete_icon\"></a></td>");  
                             out.println("</tr>");
@@ -98,7 +105,27 @@
                 </table>
             </div>
 
+			<nav id="menu" width="100px">
+                        
+                         <jsp:include page="valikko.jsp"/>
+ 
+   </nav>
         </div>
+
+
+                
+                <script type="text/javascript">
+			$(function() {
+				
+                                
+                                $("nav#menu").mmenu({
+            extensions: ["theme-dark"]
+         });
+         
+         
+                                
+			});
+		</script>  
     </body>
 </html>
 

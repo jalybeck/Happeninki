@@ -1,4 +1,5 @@
 <%@ page language="java" import="fi.tsoha.service.HappeninkiService, fi.tsoha.model.Tila, fi.tsoha.model.Kayttaja" contentType="text/html; UTF-8" pageEncoding="UTF-8"%>
+
 <%
     request.setCharacterEncoding("UTF-8");
     response.setCharacterEncoding("UTF-8");
@@ -69,5 +70,19 @@
             returnURL = "osallistujat.jsp?viesti="+t.getViesti()+"&pida_arvot=0";
             
         request.getRequestDispatcher(returnURL).forward(request, response);
+    } else if("lisaa_ryhma".equals(toiminto)) {
+        t = s.luoUusiRyhma(new String(request.getParameter("nimi")), new String(request.getParameter("kuvaus")), 
+        ((Kayttaja)session.getAttribute("kayttaja")).getID());
+        
+        if(t.getKoodi() == 1)
+            returnURL = "ryhmat.jsp?viesti="+t.getViesti()+"&pida_arvot=1";
+        else
+            returnURL = "ryhmat.jsp?viesti="+t.getViesti()+"&pida_arvot=0";
+        
+        request.getRequestDispatcher(returnURL).forward(request, response);    
+    } else if("poista_ryhma".equals(toiminto)) {
+        t = s.poistaRyhma(Integer.parseInt(request.getParameter("id")));
+        request.getRequestDispatcher("ryhmat.jsp?viesti="+t.getViesti()).forward(request, response);
     }
 %>
+<jsp:include page="/onkoKirjautunut.jsp"/>
